@@ -28,11 +28,38 @@ fn main() {
             println!("Invalid phone number");
         }
     }
+
+    println!("Enter your email: ");
+    let mut email_input = String::new();
+    io::stdin()
+        .read_line(&mut email_input)
+        .expect("Failed to read line");
+    let email_input = email_input.trim();
+    if validate_email(email_input) {
+        println!("Valid email");
+    } else {
+        println!("Invalid email");
+    }
+
+    println!("Enter a class roster name (Last name, First name, MI):");
+
+    let mut roster_name_input = String::new();
+    io::stdin().read_line(&mut roster_name_input).expect("Failed to read input");
+
+    let roster_name_input = roster_name_input.trim();
+    if validate_name_roster(roster_name_input) {
+        println!("The class roster name is valid.");
+    } else {
+        println!("The class roster name is invalid.");
+    }
+
 }
 
 lazy_static! {
     static ref SSN_REGEX: Regex = Regex::new(r"^(?P<area>\d{3})[-\s]?(?P<group>\d{2})[-\s]?(?P<serial>\d{4})$").unwrap();
     static ref PHONE_NUMBER_REGEX: Regex = Regex::new(r"^\s*\(?(\d{3})\)?[-\s]?(\d{3})[-\s]?(\d{4})\s*$").unwrap();
+    static ref EMAIL_REGEX: Regex = Regex::new(r"^(?i)[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$").unwrap();
+    static ref NAME_ROSTER_REGEX: Regex = Regex::new(r"^(?P<last>[a-zA-Z]+),\s*(?P<first>[a-zA-Z]+)(,\s*(?P<middle>[a-zA-Z]))*$").unwrap();
 }
 
 fn get_ssn() -> String {
@@ -86,4 +113,12 @@ fn get_phone_number(phone: &str) -> Option<PhoneNumber> {
         return phonenumber::parse(Some("US".parse().unwrap()), &phone_number).ok();
     }
     None
+}
+
+fn validate_email(email: &str) -> bool {
+    EMAIL_REGEX.is_match(email)
+}
+
+fn validate_name_roster(name_roster: &str) -> bool {
+    NAME_ROSTER_REGEX.is_match(name_roster)
 }

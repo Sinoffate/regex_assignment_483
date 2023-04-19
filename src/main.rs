@@ -94,13 +94,8 @@ fn validate_ssn(ssn: &str) -> bool {
             return false;
         }
 
-        // Invalid area numbers (ranges): 734-749, 772-799, 800-999
-        if (area >= 734 && area <= 749) || (area >= 772 && area <= 799) || (area >= 800) {
-            return false;
-        }
-
-        // Invalid area numbers (specific values): 666
-        if area == 666 {
+        // Invalid area numbers (specific): 666 ; (range): 900-999
+        if area == 666 || (area >= 900) {
             return false;
         }
 
@@ -186,7 +181,7 @@ mod tests {
 
     #[test]
     fn test_validate_ssn_with_invalid_area_number() {
-        assert!(!validate_ssn("734-45-6789"));
+        assert!(!validate_ssn("000-45-6789"));
     }
 
     #[test]
@@ -207,11 +202,6 @@ mod tests {
     #[test]
     fn test_validate_ssn_with_invalid_area_number_772() {
         assert!(!validate_ssn("772-45-6789"));
-    }
-
-    #[test]
-    fn test_validate_ssn_with_invalid_area_number_800() {
-        assert!(!validate_ssn("800-45-6789"));
     }
 
 }

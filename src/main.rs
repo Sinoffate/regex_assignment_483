@@ -124,10 +124,6 @@ fn validate_name_roster(name_roster: &str) -> bool {
     NAME_ROSTER_REGEX.is_match(name_roster)
 }
 
-fn is_leap_year(year: u16) -> bool {
-    (year % 4 == 0) && (year % 100 != 0 || year % 400 == 0)
-}
-
 fn validate_date(date: &str) -> bool {
     if let Some(captures) = DATE_REGEX.captures(date) {
         let month = captures.name("month").unwrap().as_str().parse::<u16>().unwrap();
@@ -150,6 +146,10 @@ fn validate_date(date: &str) -> bool {
     false
 }
 
+fn is_leap_year(year: u16) -> bool {
+    (year % 4 == 0) && (year % 100 != 0 || year % 400 == 0)
+}
+
 
 
 
@@ -160,18 +160,22 @@ mod tests {
     use super::*;
 
     #[test]
+    fn test_validate_ssn() {
+        assert!(validate_ssn("001-01-0001"));
+    }
+    #[test]
     fn test_validate_ssn_with_dashes() {
-        assert!(validate_ssn("123-45-6789"));
+        assert!(validate_ssn("167-18-0009"));
     }
 
     #[test]
     fn test_validate_ssn_with_spaces() {
-        assert!(validate_ssn("123 45 6789"));
+        assert!(validate_ssn("123 01 6281"));
     }
 
     #[test]
     fn test_validate_ssn_with_dashes_and_spaces() {
-        assert!(validate_ssn("123-45 6789"));
+        assert!(validate_ssn("724-34 8124"));
     }
 
     #[test]
@@ -200,8 +204,118 @@ mod tests {
     }
 
     #[test]
-    fn test_validate_ssn_with_invalid_area_number_772() {
-        assert!(!validate_ssn("772-45-6789"));
+    fn test_validate_ssn_with_invalid_area_number_900() {
+        assert!(!validate_ssn("900-45-6789"));
+    }
+
+    #[test]
+    fn test_get_phone_number() {
+        let phone_number = get_phone_number("2063311383");
+        match phone_number {
+            Some(phone_number) => {
+                assert!(phone_number.is_valid());
+            }
+            None => assert!(false),
+        }
+    }
+
+    #[test]
+    fn test_get_phone_number_with_dashes() {
+        let phone_number = get_phone_number("509-331-1383");
+        match phone_number {
+            Some(phone_number) => {
+                assert!(phone_number.is_valid());
+            }
+            None => assert!(false),
+        }
+    }
+
+    #[test]
+    fn test_get_phone_number_with_spaces() {
+        let phone_number = get_phone_number("206 301 1473");
+        match phone_number {
+            Some(phone_number) => {
+                assert!(phone_number.is_valid());
+            }
+            None => assert!(false),
+        }
+    }
+
+    #[test]
+    fn test_get_phone_number_with_parentheses() {
+        let phone_number = get_phone_number("(206)3011473");
+        match phone_number {
+            Some(phone_number) => {
+                assert!(phone_number.is_valid());
+            }
+            None => assert!(false),
+        }
+    }
+
+    #[test]
+    fn test_get_phone_number_with_dashes_and_parentheses() {
+        let phone_number = get_phone_number("(206) 301-1473");
+        match phone_number {
+            Some(phone_number) => {
+                assert!(phone_number.is_valid());
+            }
+            None => assert!(false),
+        }
+    }
+
+    #[test]
+    fn test_invalid_get_phone_number() {
+        let phone_number = get_phone_number("1233011473");
+        match phone_number {
+            Some(phone_number) => {
+                assert!(!phone_number.is_valid());
+            }
+            None => assert!(false),
+        }
+    }
+
+    #[test]
+    fn test_invalid_get_phone_number_with_dashes() {
+        let phone_number = get_phone_number("101-015-9846");
+        match phone_number {
+            Some(phone_number) => {
+                assert!(!phone_number.is_valid());
+            }
+            None => assert!(false),
+        }
+    }
+
+    #[test]
+    fn test_invalid_get_phone_number_with_spaces() {
+        let phone_number = get_phone_number("101 015 9846");
+        match phone_number {
+            Some(phone_number) => {
+                assert!(!phone_number.is_valid());
+            }
+            None => assert!(false),
+        }
+    }
+
+    #[test]
+    fn test_invalid_get_phone_number_with_parentheses() {
+        let phone_number = get_phone_number("(101)0159846");
+        match phone_number {
+            Some(phone_number) => {
+                assert!(!phone_number.is_valid());
+            }
+            None => assert!(false),
+        }
+    }
+
+    #[test]
+    fn test_invalid_get_phone_number_with_dashes_and_parentheses() {
+        let phone_number = get_phone_number("(101) 015-9846");
+        match phone_number {
+            Some(phone_number) => {
+                assert!(!phone_number.is_valid());
+            }
+            None => assert!(false),
+        }
     }
 
 }

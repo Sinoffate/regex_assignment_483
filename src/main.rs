@@ -20,7 +20,7 @@ fn main() {
         .expect("Failed to read line");
 
     let phone_input = phone_input.trim();
-    match get_phone_number(phone_input) {
+    match validate_phone_number(phone_input) {
         Some(phone_number) => {
             println!("Valid phone number: {}", phone_number.format().mode(Mode::National).to_string());
         },
@@ -104,7 +104,7 @@ fn validate_ssn(ssn: &str) -> bool {
     false
 }
 
-fn get_phone_number(phone: &str) -> Option<PhoneNumber> {
+fn validate_phone_number(phone: &str) -> Option<PhoneNumber> {
     if let Some(captures) = PHONE_NUMBER_REGEX.captures(phone) {
         let area_code = captures.get(1).unwrap().as_str().parse::<u16>().unwrap();
         let local_prefix = captures.get(2).unwrap().as_str().parse::<u16>().unwrap();
@@ -209,8 +209,8 @@ mod tests {
     }
 
     #[test]
-    fn test_get_phone_number() {
-        let phone_number = get_phone_number("2063311383");
+    fn test_validate_phone_number() {
+        let phone_number = validate_phone_number("2063311383");
         match phone_number {
             Some(phone_number) => {
                 assert!(phone_number.is_valid());
@@ -220,8 +220,8 @@ mod tests {
     }
 
     #[test]
-    fn test_get_phone_number_with_dashes() {
-        let phone_number = get_phone_number("509-331-1383");
+    fn test_validate_phone_number_with_dashes() {
+        let phone_number = validate_phone_number("509-331-1383");
         match phone_number {
             Some(phone_number) => {
                 assert!(phone_number.is_valid());
@@ -231,8 +231,8 @@ mod tests {
     }
 
     #[test]
-    fn test_get_phone_number_with_spaces() {
-        let phone_number = get_phone_number("206 301 1473");
+    fn test_validate_phone_number_with_spaces() {
+        let phone_number = validate_phone_number("206 301 1473");
         match phone_number {
             Some(phone_number) => {
                 assert!(phone_number.is_valid());
@@ -242,8 +242,8 @@ mod tests {
     }
 
     #[test]
-    fn test_get_phone_number_with_parentheses() {
-        let phone_number = get_phone_number("(206)3011473");
+    fn test_validate_phone_number_with_parentheses() {
+        let phone_number = validate_phone_number("(206)3011473");
         match phone_number {
             Some(phone_number) => {
                 assert!(phone_number.is_valid());
@@ -253,8 +253,8 @@ mod tests {
     }
 
     #[test]
-    fn test_get_phone_number_with_dashes_and_parentheses() {
-        let phone_number = get_phone_number("(206) 301-1473");
+    fn test_validate_phone_number_with_dashes_and_parentheses() {
+        let phone_number = validate_phone_number("(206) 301-1473");
         match phone_number {
             Some(phone_number) => {
                 assert!(phone_number.is_valid());
@@ -264,8 +264,8 @@ mod tests {
     }
 
     #[test]
-    fn test_invalid_get_phone_number() {
-        let phone_number = get_phone_number("1233011473");
+    fn test_invalid_validate_phone_number() {
+        let phone_number = validate_phone_number("1233011473");
         match phone_number {
             Some(phone_number) => {
                 assert!(!phone_number.is_valid());
@@ -275,8 +275,8 @@ mod tests {
     }
 
     #[test]
-    fn test_invalid_get_phone_number_with_dashes() {
-        let phone_number = get_phone_number("101-015-9846");
+    fn test_invalid_validate_phone_number_with_dashes() {
+        let phone_number = validate_phone_number("101-015-9846");
         match phone_number {
             Some(phone_number) => {
                 assert!(!phone_number.is_valid());
@@ -286,8 +286,8 @@ mod tests {
     }
 
     #[test]
-    fn test_invalid_get_phone_number_with_spaces() {
-        let phone_number = get_phone_number("101 015 9846");
+    fn test_invalid_validate_phone_number_with_spaces() {
+        let phone_number = validate_phone_number("101 015 9846");
         match phone_number {
             Some(phone_number) => {
                 assert!(!phone_number.is_valid());
@@ -297,8 +297,8 @@ mod tests {
     }
 
     #[test]
-    fn test_invalid_get_phone_number_with_parentheses() {
-        let phone_number = get_phone_number("(101)0159846");
+    fn test_invalid_validate_phone_number_with_parentheses() {
+        let phone_number = validate_phone_number("(101)0159846");
         match phone_number {
             Some(phone_number) => {
                 assert!(!phone_number.is_valid());
@@ -308,8 +308,8 @@ mod tests {
     }
 
     #[test]
-    fn test_invalid_get_phone_number_with_dashes_and_parentheses() {
-        let phone_number = get_phone_number("(101) 015-9846");
+    fn test_invalid_validate_phone_number_with_dashes_and_parentheses() {
+        let phone_number = validate_phone_number("(101) 015-9846");
         match phone_number {
             Some(phone_number) => {
                 assert!(!phone_number.is_valid());
@@ -317,5 +317,91 @@ mod tests {
             None => assert!(false),
         }
     }
+
+    #[test]
+    fn test_validate_email() {
+        assert!(validate_email("notafed@fbi.gov"));
+    }
+
+    #[test]
+    fn test_validate_email_with_valid_username() {
+        assert!(validate_email("not-a-fed@fbi.gov"));
+    }
+
+    #[test]
+    fn test_validate_email_with_valid_username_2() {
+        assert!(validate_email("not_a_fed@fbi.gov"));
+    }
+
+    #[test]
+    fn test_validate_email_with_valid_domain() {
+        assert!(validate_email("definitelyNotAFed@fbi.gov"));
+    }
+
+    #[test]
+    fn test_validate_email_with_valid_domain_2() {
+        assert!(validate_email("definitelynotaFed@fed-fbi.gov"));
+    }
+
+    #[test]
+    fn test_validate_email_with_invalid_domain() {
+        assert!(validate_email("notafed@f.b.i.gov"));
+    }
+
+    #[test]
+    fn test_validate_email_with_invalid_domain_2() {
+        assert!(validate_email("notafed@fbi..gov"));
+    }
+
+    #[test]
+    fn test_validate_email_with_invalid_username() {
+        assert!(validate_email("notafed-@fbi.gov"));
+    }
+
+    #[test]
+    fn test_validate_email_with_invalid_username_2() {
+        assert_eq!(validate_email("not...fed@domain.gov"), false);
+    }
+
+    #[test]
+    fn test_validate_email_with_invalid_symbol() {
+        assert_eq!(validate_email("notafbi.gov"), false);
+    }
+
+    #[test]
+    fn test_validate_name_roster() {
+        assert!(validate_name_roster("Doe, John, W"));
+    }
+
+    #[test]
+    fn test_validate_name_roster_without_middle_initial() {
+        assert!(validate_name_roster("Ded, Zed"));
+    }
+
+    #[test]
+    fn test_validate_name_roster_with_multiple_middle_initial() {
+        assert!(validate_name_roster("Roe, Joe, W, H"));
+    }
+
+    #[test]
+    fn test_validate_name_roster_with_multiple_middle_initial_2() {
+        assert!(validate_name_roster("Roe, Joe, W, H, J"));
+    }
+
+    #[test]
+    fn test_validate_name_roster_with_multiple_middle_initial_3() {
+        assert!(validate_name_roster("Roe, Joe, W, H, J, K"));
+    }
+
+    #[test]
+    fn test_validate_name_roster_invalid() {
+        assert_eq!(validate_name_roster("Roe Joe W H J K"), false);
+    }
+
+    #[test]
+    fn test_validate_name_roster_invalid_2() {
+        assert_eq!(validate_name_roster("Jingle Heimer Schmidt"), false);
+    }
+
 
 }

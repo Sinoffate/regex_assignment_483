@@ -2,8 +2,6 @@ use std::io;
 use regex::Regex;
 use phonenumber::{Mode, PhoneNumber};
 
-
-
 fn main() {
     let ssn = get_ssn();
     let valid = validate_ssn(&ssn);
@@ -279,7 +277,7 @@ fn validate_currency(amount: &str) -> bool {
 }
 
 fn validate_url(url: &str) -> bool {
-    let url_regex: Regex = Regex::new(r"(?i)^(?:http[s]?://)?(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+(?:/[-a-zA-Z0-9()@:%_+.~#?&/=]*)?$").unwrap();
+    let url_regex: Regex = Regex::new(r"(?i)^(?:http[s]?://)?(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+(?:[a-zA-Z]{2,6})(?:/[-a-zA-Z0-9()@:%_+.~#?&/=]*)?$").unwrap();
 
     url_regex.is_match(url)
 }

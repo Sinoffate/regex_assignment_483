@@ -9,7 +9,7 @@ To get started, you'll need to have the following software installed on your com
 - Rust: Follow the [official installation guide](https://www.rust-lang.org/tools/install) to install Rust and its package manager, Cargo.
 
 ## Getting Started
-
+  ```bash
   # Navigate to the project directory   
   # To build and run the project we use Cargo:
   cargo run

@@ -1,6 +1,5 @@
 use std::io;
 use regex::Regex;
-use lazy_static::lazy_static;
 use phonenumber::{Mode, PhoneNumber};
 
 
@@ -14,7 +13,7 @@ fn main() {
         println!("Invalid SSN");
     }
 
-    println!("Enter your phone number: ");
+    println!("\nEnter your phone number: ");
     let mut phone_input = String::new();
     io::stdin()
         .read_line(&mut phone_input)
@@ -30,7 +29,7 @@ fn main() {
         }
     }
 
-    println!("Enter your email: ");
+    println!("\nEnter your email: ");
     let mut email_input = String::new();
     io::stdin()
         .read_line(&mut email_input)
@@ -43,7 +42,7 @@ fn main() {
         println!("Invalid email");
     }
 
-    println!("Enter a class roster name (Last name, First name, MI):");
+    println!("\nEnter a class roster name (Last name, First name, MI):");
     let mut roster_name_input = String::new();
     io::stdin().read_line(&mut roster_name_input).expect("Failed to read input");
 
@@ -54,7 +53,7 @@ fn main() {
         println!("The class roster name is invalid.");
     }
 
-    println!("Enter a date (MM-DD-YYYY or MM/DD/YYYY):");
+    println!("\nEnter a date (MM-DD-YYYY or MM/DD/YYYY):");
     let mut date_input = String::new();
     io::stdin().read_line(&mut date_input).expect("Failed to read input");
 
@@ -65,7 +64,7 @@ fn main() {
         println!("The date is invalid.");
     }
 
-    println!("Enter a house address (Street number, street name, and abbreviation):");
+    println!("\nEnter a house address (Street number, street name, and abbreviation, e.g. 1234 Elm street):");
     let mut address_input = String::new();
     io::stdin().read_line(&mut address_input).expect("Failed to read input");
 
@@ -76,7 +75,7 @@ fn main() {
         println!("The house address is invalid.");
     }
 
-    println!("Enter a city, state abbreviation, and zip code (e.g. Seattle, WA 98101):");
+    println!("\nEnter a city, state abbreviation, and zip code (e.g. Seattle, WA 98101):");
     let mut city_state_zip_input = String::new();
     io::stdin().read_line(&mut city_state_zip_input).expect("Failed to read input");
 
@@ -87,7 +86,7 @@ fn main() {
         println!("The city, state, and zip code are invalid.");
     }
 
-    println!("Enter a military time without colons and with leading zeros for times under 10 (e.g. 0123):");
+    println!("\nEnter a military time without colons and with leading zeros for times under 10 (e.g. 0123):");
     let mut military_time_input = String::new();
     io::stdin().read_line(&mut military_time_input).expect("Failed to read input");
 
@@ -98,7 +97,7 @@ fn main() {
         println!("The military time is invalid.");
     }
 
-    println!("Enter a US currency amount down to the penny (e.g. $123,456,789.23):");
+    println!("\nEnter a US currency amount down to the penny (e.g. $123,456,789.23):");
     let mut currency_input = String::new();
     io::stdin().read_line(&mut currency_input).expect("Failed to read input");
 
@@ -109,7 +108,7 @@ fn main() {
         println!("The currency amount is invalid.");
     }
 
-    println!("Enter a URL, optionally including http:// or https:// (e.g. https://www.example.com):");
+    println!("\nEnter a URL, optionally including http:// or https:// (e.g. https://www.example.com):");
     let mut url_input = String::new();
     io::stdin().read_line(&mut url_input).expect("Failed to read input");
 
@@ -120,8 +119,8 @@ fn main() {
         println!("The URL is invalid.");
     }
 
-    println!("Enter a password with at least 10 characters, including at least one upper case \
-              character, one lower case character, one digit, one punctuation mark, and no more \
+    println!("\nEnter a password with at least 10 characters, including at least one upper case \
+              character, one lower case character, \none digit, one punctuation mark, and no more \
               than 3 consecutive lower case characters:");
     let mut password_input = String::new();
     io::stdin().read_line(&mut password_input).expect("Failed to read input");
@@ -133,7 +132,7 @@ fn main() {
         println!("The password is invalid.");
     }
 
-    println!("Enter a text to find all words containing an odd number of alphabetic characters and ending in 'ion':");
+    println!("\nEnter a text to find all words containing an odd number of alphabetic characters and ending in 'ion':");
     let mut text_input = String::new();
     io::stdin().read_line(&mut text_input).expect("Failed to read input");
 
@@ -147,20 +146,6 @@ fn main() {
     } else {
         println!("No odd 'ion' words found.");
     }
-}
-
-lazy_static! {
-    static ref SSN_REGEX: Regex = Regex::new(r"^(?P<area>\d{3})[-\s]?(?P<group>\d{2})[-\s]?(?P<serial>\d{4})$").unwrap();
-    static ref PHONE_NUMBER_REGEX: Regex = Regex::new(r"^\s*\(?(\d{3})\)?[-\s]?(\d{3})[-\s]?(\d{4})\s*$").unwrap();
-    static ref EMAIL_REGEX: Regex = Regex::new(r"(?i)^(?P<prefix>[a-z0-9!#$%&'*+/=?^_`{|}~-]+(\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*)(@)(?P<domain>[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)+)$").unwrap();
-    static ref NAME_ROSTER_REGEX: Regex = Regex::new(r"^(?P<last>[a-zA-Z]+),\s*(?P<first>[a-zA-Z]+)(,\s*(?P<middle>[a-zA-Z]))*$").unwrap();
-    static ref DATE_REGEX: Regex = Regex::new(r"^(?P<month>0[1-9]|1[0-2])[-/](?P<day>0[1-9]|[12]\d|3[01])[-/](?P<year>\d{4})$").unwrap();
-    static ref ADDRESS_REGEX: Regex = Regex::new(r"(?i)^\d+\s+([\w\s]+)\s+(road|rd|street|st|avenue|ave|boulevard|blvd)$").unwrap();
-    static ref CITY_STATE_ZIP_REGEX: Regex = Regex::new(r"^(?P<city>[a-zA-Z\s]+),\s+(?P<state>AL|AK|AZ|AR|CA|CO|CT|DE|FL|GA|HI|ID|IL|IN|IA|KS|KY|LA|ME|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY)\s+(?P<zip>\d{5}(-\d{4})?)$").unwrap();
-    static ref MILITARY_TIME_REGEX: Regex = Regex::new(r"^([01]\d|2[0-3])([0-5]\d)$").unwrap();
-    static ref CURRENCY_REGEX: Regex = Regex::new(r"^\$((\d{1,3}(,\d{3})*(\.\d{2})?)|(\d+(\.\d{2})?))$").unwrap();
-    static ref URL_REGEX: Regex = Regex::new(r"(?i)^(?:http[s]?://)?(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+(?:[a-zA-Z]{2,6})(?:/[-a-zA-Z0-9()@:%_+.~#?&/=]*)?$").unwrap();
-    static ref ODD_ION_WORDS_REGEX: Regex = Regex::new(r"\b(?:[a-zA-Z]{2})*[a-zA-Z]ion\b").unwrap();
 }
 
 // This function gets the Social Security Number (SSN) input from the user.
@@ -182,10 +167,10 @@ fn get_ssn() -> String {
 
 // This function validates the given SSN and returns a boolean value.
 fn validate_ssn(ssn: &str) -> bool {
-
+    let ssn_regex: Regex = Regex::new(r"^(?P<area>\d{3})[-\s]?(?P<group>\d{2})[-\s]?(?P<serial>\d{4})$").unwrap();
     // Check if the SSN matches the SSN_REGEX pattern.
     // If it matches, the 'captures' variable will contain the matched components.
-    if let Some(captures) = SSN_REGEX.captures(ssn) {
+    if let Some(captures) = ssn_regex.captures(ssn) {
         let area = captures.name("area").unwrap().as_str().parse::<u16>().unwrap();
         let group = captures.name("group").unwrap().as_str().parse::<u16>().unwrap();
         let serial = captures.name("serial").unwrap().as_str().parse::<u16>().unwrap();
@@ -211,10 +196,10 @@ fn validate_ssn(ssn: &str) -> bool {
 // This function validates the given US phone number string and returns an Option containing
 // a PhoneNumber struct if the input is valid or None if the input is invalid.
 fn validate_phone_number(phone: &str) -> Option<PhoneNumber> {
-
+    let phone_regex: Regex = Regex::new(r"^\s*\(?(\d{3})\)?[-\s]?(\d{3})[-\s]?(\d{4})\s*$").unwrap();
     // Check if the input phone number matches the PHONE_NUMBER_REGEX pattern.
     // If it matches, the 'captures' variable will contain the matched components.
-    if let Some(captures) = PHONE_NUMBER_REGEX.captures(phone) {
+    if let Some(captures) = phone_regex.captures(phone) {
 
         // Extract the 'area_code', 'local_prefix', and 'local_suffix' numbers
         // from the matched phone number components.
@@ -236,15 +221,19 @@ fn validate_phone_number(phone: &str) -> Option<PhoneNumber> {
 }
 
 fn validate_email(email: &str) -> bool {
-    EMAIL_REGEX.is_match(email)
+    let email_regex: Regex = Regex::new(r"(?i)^(?P<prefix>[a-z0-9!#$%&'*+/=?^_`{|}~-]+(\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*)(@)(?P<domain>[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)+)$").unwrap();
+
+    email_regex.is_match(email)
 }
 
 fn validate_name_roster(name_roster: &str) -> bool {
-    NAME_ROSTER_REGEX.is_match(name_roster)
+    let name_roster_regex: Regex = Regex::new(r"^(?P<last>[a-zA-Z]+),\s*(?P<first>[a-zA-Z]+)(,\s*(?P<middle>[a-zA-Z]))*$").unwrap();
+    name_roster_regex.is_match(name_roster)
 }
 
 fn validate_date(date: &str) -> bool {
-    if let Some(captures) = DATE_REGEX.captures(date) {
+    let date_regex: Regex = Regex::new(r"^(?P<month>0[1-9]|1[0-2])[-/](?P<day>0[1-9]|[12]\d|3[01])[-/](?P<year>\d{4})$").unwrap();
+    if let Some(captures) = date_regex.captures(date) {
         let month = captures.name("month").unwrap().as_str().parse::<u16>().unwrap();
         let day = captures.name("day").unwrap().as_str().parse::<u16>().unwrap();
         let year = captures.name("year").unwrap().as_str().parse::<u16>().unwrap();
@@ -270,23 +259,29 @@ fn is_leap_year(year: u16) -> bool {
 }
 
 fn validate_address(address: &str) -> bool {
-    ADDRESS_REGEX.is_match(address)
+    let address_regex: Regex = Regex::new(r"(?i)^\d+\s+([\w\s]+)\s+(road|rd|street|st|avenue|ave|boulevard|blvd)$").unwrap();
+    address_regex.is_match(address)
 }
 
 fn validate_city_state_zip(input: &str) -> bool {
-    CITY_STATE_ZIP_REGEX.is_match(input)
+    let city_state_zip_regex: Regex = Regex::new(r"^(?P<city>[a-zA-Z\s]+),\s+(?P<state>AL|AK|AZ|AR|CA|CO|CT|DE|FL|GA|HI|ID|IL|IN|IA|KS|KY|LA|ME|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY)\s+(?P<zip>\d{5}(-\d{4})?)$").unwrap();
+    city_state_zip_regex.is_match(input)
 }
 
 fn validate_military_time(time: &str) -> bool {
-    MILITARY_TIME_REGEX.is_match(time)
+    let military_time_regex: Regex = Regex::new(r"^([01]\d|2[0-3])([0-5]\d)$").unwrap();
+    military_time_regex.is_match(time)
 }
 
 fn validate_currency(amount: &str) -> bool {
-    CURRENCY_REGEX.is_match(amount)
+    let currency_regex: Regex = Regex::new(r"^\$((\d{1,3}(,\d{3})*(\.\d{2})?)|(\d+(\.\d{2})?))$").unwrap();
+    currency_regex.is_match(amount)
 }
 
 fn validate_url(url: &str) -> bool {
-    URL_REGEX.is_match(url)
+    let url_regex: Regex = Regex::new(r"(?i)^(?:http[s]?://)?(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+(?:/[-a-zA-Z0-9()@:%_+.~#?&/=]*)?$").unwrap();
+
+    url_regex.is_match(url)
 }
 
 fn validate_password(password: &str) -> bool {
@@ -307,7 +302,8 @@ fn validate_password(password: &str) -> bool {
 }
 
 fn validate_odd_ion_words(text: &str) -> Vec<String> {
-    ODD_ION_WORDS_REGEX
+    let odd_ion_words_regex: Regex = Regex::new(r"\b(?:[a-zA-Z]{2})*[a-zA-Z]ion\b").unwrap();
+    odd_ion_words_regex
         .find_iter(text)
         .map(|mat| mat.as_str().to_string())
         .collect()

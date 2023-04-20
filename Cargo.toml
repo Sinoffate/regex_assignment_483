@@ -7,6 +7,5 @@ edition = "2021"
 
 [dependencies]
 regex = "1.7.3"
-lazy_static = "1.4.0"
 phonenumber = "0.3.2+8.13.9"
 

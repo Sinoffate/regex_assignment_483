@@ -10,21 +10,23 @@ To get started, you'll need to have the following software installed on your com
 
 ## Getting Started
 
-1. **Clone the repository**
+**Clone the repository**
 
-   Clone this repository to your local machine using:
+  Clone this repository to your local machine using:
 
-   ```bash
-   git clone https://github.com/your_username/rust-validation-project.git
-   Navigate to the project directory
-   cd rust-validation-project
-   Build and run the project
+  ```bash
+  git clone https://github.com/your_username/rust-validation-project.git
 
-Use Cargo to build and run the project:
+  # Navigate to the project directory
+  cd rust-validation-project
+   
+  # To build and run the project we use Cargo:
   cargo run
 
-Running Tests
-To run the unit tests for the validation functions, use the following command:
+  # Running Tests
+  # To run the unit tests for the validation functions, use the following command:
   cargo test
 
-This command will run all the tests defined in the tests module and output the results.
+  # This command will run all the tests defined in the tests module and output the results.
+  ```
+

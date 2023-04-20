@@ -10,16 +10,7 @@ To get started, you'll need to have the following software installed on your com
 
 ## Getting Started
 
-**Clone the repository**
-
-  Clone this repository to your local machine using:
-
-  ```bash
-  git clone https://github.com/your_username/rust-validation-project.git
-
-  # Navigate to the project directory
-  cd rust-validation-project
-   
+  # Navigate to the project directory   
   # To build and run the project we use Cargo:
   cargo run
 

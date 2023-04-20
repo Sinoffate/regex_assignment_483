@@ -4,6 +4,7 @@ use lazy_static::lazy_static;
 use phonenumber::{Mode, PhoneNumber};
 
 
+
 fn main() {
     let ssn = get_ssn();
     let valid = validate_ssn(&ssn);
@@ -151,29 +152,39 @@ fn main() {
 lazy_static! {
     static ref SSN_REGEX: Regex = Regex::new(r"^(?P<area>\d{3})[-\s]?(?P<group>\d{2})[-\s]?(?P<serial>\d{4})$").unwrap();
     static ref PHONE_NUMBER_REGEX: Regex = Regex::new(r"^\s*\(?(\d{3})\)?[-\s]?(\d{3})[-\s]?(\d{4})\s*$").unwrap();
-    static ref EMAIL_REGEX: Regex = Regex::new(r"^(?i)[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$").unwrap();
+    static ref EMAIL_REGEX: Regex = Regex::new(r"(?i)^(?P<prefix>[a-z0-9!#$%&'*+/=?^_`{|}~-]+(\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*)(@)(?P<domain>[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)+)$").unwrap();
     static ref NAME_ROSTER_REGEX: Regex = Regex::new(r"^(?P<last>[a-zA-Z]+),\s*(?P<first>[a-zA-Z]+)(,\s*(?P<middle>[a-zA-Z]))*$").unwrap();
     static ref DATE_REGEX: Regex = Regex::new(r"^(?P<month>0[1-9]|1[0-2])[-/](?P<day>0[1-9]|[12]\d|3[01])[-/](?P<year>\d{4})$").unwrap();
-    static ref ADDRESS_REGEX: Regex = Regex::new(r"^(?P<number>\d+)\s+(?P<street>[a-zA-Z\s]+)\s+(?P<type>(road|street|boulevard|avenue|r(?:d)?|st(?:r)?|blvd|ave))$").unwrap();
+    static ref ADDRESS_REGEX: Regex = Regex::new(r"(?i)^\d+\s+([\w\s]+)\s+(road|rd|street|st|avenue|ave|boulevard|blvd)$").unwrap();
     static ref CITY_STATE_ZIP_REGEX: Regex = Regex::new(r"^(?P<city>[a-zA-Z\s]+),\s+(?P<state>AL|AK|AZ|AR|CA|CO|CT|DE|FL|GA|HI|ID|IL|IN|IA|KS|KY|LA|ME|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY)\s+(?P<zip>\d{5}(-\d{4})?)$").unwrap();
     static ref MILITARY_TIME_REGEX: Regex = Regex::new(r"^([01]\d|2[0-3])([0-5]\d)$").unwrap();
     static ref CURRENCY_REGEX: Regex = Regex::new(r"^\$((\d{1,3}(,\d{3})*(\.\d{2})?)|(\d+(\.\d{2})?))$").unwrap();
-    static ref URL_REGEX: Regex = Regex::new(r"^(?i)((http|https):\/\/)?[\w\-]+(\.[\w\-]+)+\.?(:\d+)?(\/\S*)?$").unwrap();
-    static ref PASSWORD_REGEX: Regex = Regex::new(r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+,.?\:{}|<>])(?i)(?:(?:(?=.*[a-z]{1,3})[a-zA-Z\d!@#$%^&*()_+,.?\:{}|<>]){10,})$").unwrap();
-    static ref ODD_ION_WORDS_REGEX: Regex = Regex::new(r"\b(?:[a-zA-Z][a-zA-Z]*?){1}(?:[a-zA-Z][a-zA-Z]*?){1}ion\b").unwrap();
+    static ref URL_REGEX: Regex = Regex::new(r"(?i)^(?:http[s]?://)?(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+(?:[a-zA-Z]{2,6})(?:/[-a-zA-Z0-9()@:%_+.~#?&/=]*)?$").unwrap();
+    static ref ODD_ION_WORDS_REGEX: Regex = Regex::new(r"\b(?:[a-zA-Z]{2})*[a-zA-Z]ion\b").unwrap();
 }
 
+// This function gets the Social Security Number (SSN) input from the user.
+// It returns the user's input as a String.
 fn get_ssn() -> String {
     let mut ssn = String::new();
     println!("Enter your SSN: ");
+
+    // Read the user's input and store it in the 'ssn' variable.
+    // If reading the input fails, an error message will be displayed.
     io::stdin()
         .read_line(&mut ssn)
         .expect("Failed to read line");
+
+    // Trim any leading or trailing whitespace from the input and convert it to a String.
     let ssn = ssn.trim();
     ssn.to_string()
 }
 
+// This function validates the given SSN and returns a boolean value.
 fn validate_ssn(ssn: &str) -> bool {
+
+    // Check if the SSN matches the SSN_REGEX pattern.
+    // If it matches, the 'captures' variable will contain the matched components.
     if let Some(captures) = SSN_REGEX.captures(ssn) {
         let area = captures.name("area").unwrap().as_str().parse::<u16>().unwrap();
         let group = captures.name("group").unwrap().as_str().parse::<u16>().unwrap();
@@ -189,20 +200,38 @@ fn validate_ssn(ssn: &str) -> bool {
             return false;
         }
 
+        // If the SSN passes all the validation checks, return true.
         return true;
     }
-    false
+
+    // If the SSN does not match the SSN_REGEX pattern, return false.
+    return false
 }
 
+// This function validates the given US phone number string and returns an Option containing
+// a PhoneNumber struct if the input is valid or None if the input is invalid.
 fn validate_phone_number(phone: &str) -> Option<PhoneNumber> {
+
+    // Check if the input phone number matches the PHONE_NUMBER_REGEX pattern.
+    // If it matches, the 'captures' variable will contain the matched components.
     if let Some(captures) = PHONE_NUMBER_REGEX.captures(phone) {
+
+        // Extract the 'area_code', 'local_prefix', and 'local_suffix' numbers
+        // from the matched phone number components.
         let area_code = captures.get(1).unwrap().as_str().parse::<u16>().unwrap();
         let local_prefix = captures.get(2).unwrap().as_str().parse::<u16>().unwrap();
         let local_suffix = captures.get(3).unwrap().as_str().parse::<u16>().unwrap();
 
+        // Format the phone number as "+1<area_code><local_prefix><local_suffix>"
         let phone_number = format!("+1{}{}{}", area_code, local_prefix, local_suffix);
+
+        // Use the 'phonenumber' crate to parse and validate the formatted phone number.
+        // If the phone number is valid, the function will return Some(PhoneNumber).
+        // Otherwise, it will return None.
         return phonenumber::parse(Some("US".parse().unwrap()), &phone_number).ok();
     }
+
+    // If the input phone number does not match the PHONE_NUMBER_REGEX pattern, the function returns None.
     None
 }
 
@@ -261,7 +290,20 @@ fn validate_url(url: &str) -> bool {
 }
 
 fn validate_password(password: &str) -> bool {
-    PASSWORD_REGEX.is_match(password)
+    let uppercase = Regex::new(r"[A-Z]").unwrap();
+    let lowercase = Regex::new(r"[a-z]").unwrap();
+    let digit = Regex::new(r"\d").unwrap();
+    let punctuation = Regex::new(r"[:punct:]").unwrap();
+    let consecutive_lowercase = Regex::new(r"[a-z]{4,}").unwrap();
+
+    let min_length = password.len() >= 10;
+    let has_uppercase = uppercase.is_match(password);
+    let has_lowercase = lowercase.is_match(password);
+    let has_digit = digit.is_match(password);
+    let has_punctuation = punctuation.is_match(password);
+    let no_consecutive_lowercase = !consecutive_lowercase.is_match(password);
+
+    min_length && has_uppercase && has_lowercase && has_digit && has_punctuation && no_consecutive_lowercase
 }
 
 fn validate_odd_ion_words(text: &str) -> Vec<String> {
@@ -437,17 +479,17 @@ mod tests {
     }
 
     #[test]
-    fn test_validate_email() {
+    fn test_validate_email_with_valid_email() {
         assert!(validate_email("notafed@fbi.gov"));
     }
 
     #[test]
-    fn test_validate_email_with_valid_username() {
+    fn test_validate_email_with_valid_username_dashes() {
         assert!(validate_email("not-a-fed@fbi.gov"));
     }
 
     #[test]
-    fn test_validate_email_with_valid_username_2() {
+    fn test_validate_email_with_valid_username_underscores() {
         assert!(validate_email("not_a_fed@fbi.gov"));
     }
 
@@ -457,18 +499,18 @@ mod tests {
     }
 
     #[test]
-    fn test_validate_email_with_valid_domain_2() {
+    fn test_validate_email_with_valid_domain_dash() {
         assert!(validate_email("definitelynotaFed@fed-fbi.gov"));
     }
 
     #[test]
     fn test_validate_email_with_invalid_domain() {
-        assert!(validate_email("notafed@f.b.i.gov"));
+        assert_eq!(validate_email("notafed@fb..i.gov"), false);
     }
 
     #[test]
     fn test_validate_email_with_invalid_domain_2() {
-        assert!(validate_email("notafed@fbi..gov"));
+        assert_eq!(validate_email("notafed@fbi..gov"), false);
     }
 
     #[test]
@@ -521,5 +563,418 @@ mod tests {
         assert_eq!(validate_name_roster("Jingle Heimer Schmidt"), false);
     }
 
+    #[test]
+    fn test_validate_name_roster_invalid_with_dashes() {
+        assert_eq!(validate_name_roster("Roe-Joe-W-H-J-K"), false);
+    }
 
+    #[test]
+    fn test_validate_name_roster_invalid_with_underscores() {
+        assert_eq!(validate_name_roster("Roe_Joe_W_H_J_K"), false);
+    }
+
+    #[test]
+    fn test_validate_name_roster_invalid_with_semi_colons() {
+        assert_eq!(validate_name_roster("Roe;Joe;W;H;J;K"), false);
+    }
+
+    #[test]
+    fn validate_date_valid_with_dash_separator() {
+        assert!(validate_date("12-31-2021"));
+    }
+
+    #[test]
+    fn validate_date_valid_with_slash_separator() {
+        assert!(validate_date("01/01/2022"));
+    }
+
+    #[test]
+    fn validate_date_valid_leap_year() {
+        assert!(validate_date("02-29-2020"));
+    }
+
+    #[test]
+    fn validate_date_valid_month_boundary() {
+        assert!(validate_date("03/31/2021"));
+    }
+
+    #[test]
+    fn validate_date_valid_end_of_year() {
+        assert!(validate_date("12-31-2023"));
+    }
+
+    #[test]
+    fn validate_date_invalid_missing_separator() {
+        assert!(!validate_date("03252021"));
+    }
+
+    #[test]
+    fn validate_date_invalid_wrong_separator() {
+        assert!(!validate_date("04.26.2021"));
+    }
+
+    #[test]
+    fn validate_date_invalid_day_out_of_range() {
+        assert!(!validate_date("02-30-2021"));
+    }
+
+    #[test]
+    fn validate_date_invalid_month_out_of_range() {
+        assert!(!validate_date("13/01/2021"));
+    }
+
+    #[test]
+    fn validate_date_invalid_non_leap_year() {
+        assert!(!validate_date("02-29-2021"));
+    }
+
+    #[test]
+    fn validate_address_valid_full_road_name() {
+        assert!(validate_address("1234 Elmwood Road"));
+    }
+
+    #[test]
+    fn validate_address_valid_abbreviated_street_name() {
+        assert!(validate_address("5678 Oak St"));
+    }
+
+    #[test]
+    fn validate_address_valid_abbreviated_avenue_name() {
+        assert!(validate_address("9012 Maple Ave"));
+    }
+
+    #[test]
+    fn validate_address_valid_full_boulevard_name() {
+        assert!(validate_address("3456 Cherry Boulevard"));
+    }
+
+    #[test]
+    fn validate_address_valid_abbreviated_boulevard_name() {
+        assert!(validate_address("7890 Pine Blvd"));
+    }
+
+    #[test]
+    fn validate_address_invalid_no_street_number() {
+        assert!(!validate_address("Cedar Road"));
+    }
+
+    #[test]
+    fn validate_address_invalid_no_road_type() {
+        assert!(!validate_address("1234 Walnut"));
+    }
+
+    #[test]
+    fn validate_address_invalid_incorrect_road_abbreviation() {
+        assert!(!validate_address("5678 Elm R"));
+    }
+
+    #[test]
+    fn validate_address_invalid_missing_space() {
+        assert!(!validate_address("9012Birch Street"));
+    }
+
+    #[test]
+    fn validate_address_invalid_street_name_missing_space() {
+        assert!(!validate_address("3456 PeachAve"));
+    }
+
+    #[test]
+    fn validate_city_state_zip_valid_city_name() {
+        assert!(validate_city_state_zip("Seattle, WA 98101"));
+    }
+
+    #[test]
+    fn validate_city_state_zip_valid_state_abbreviation() {
+        assert!(validate_city_state_zip("Austin, TX 78701"));
+    }
+
+    #[test]
+    fn validate_city_state_zip_valid_zip_code() {
+        assert!(validate_city_state_zip("New York, NY 10001"));
+    }
+
+    #[test]
+    fn validate_city_state_zip_valid_with_spaces() {
+        assert!(validate_city_state_zip("Los Angeles,   CA    90001"));
+    }
+
+    #[test]
+    fn validate_city_state_zip_valid_multiline() {
+        assert!(validate_city_state_zip("Portland,\nOR 97201"));
+    }
+
+    #[test]
+    fn validate_city_state_zip_invalid_no_comma() {
+        assert!(!validate_city_state_zip("Boston MA 02101"));
+    }
+
+    #[test]
+    fn validate_city_state_zip_invalid_no_space_after_comma() {
+        assert!(!validate_city_state_zip("Chicago,IL 60601"));
+    }
+
+    #[test]
+    fn validate_city_state_zip_invalid_wrong_state_abbreviation() {
+        assert!(!validate_city_state_zip("Miami, FLA 33101"));
+    }
+
+    #[test]
+    fn validate_city_state_zip_invalid_non_alphabetic_city_name() {
+        assert!(!validate_city_state_zip("123City, CA 90001"));
+    }
+
+    #[test]
+    fn validate_city_state_zip_invalid_zip_code_length() {
+        assert!(!validate_city_state_zip("Denver, CO 8020"));
+    }
+
+    #[test]
+    fn validate_military_time_valid_midnight() {
+        assert!(validate_military_time("0000"));
+    }
+
+    #[test]
+    fn validate_military_time_valid_noon() {
+        assert!(validate_military_time("1200"));
+    }
+
+    #[test]
+    fn validate_military_time_valid_one_minute_before_midnight() {
+        assert!(validate_military_time("2359"));
+    }
+
+    #[test]
+    fn validate_military_time_valid_random_hour_and_minute() {
+        assert!(validate_military_time("1543"));
+    }
+
+    #[test]
+    fn validate_military_time_valid_leading_zero() {
+        assert!(validate_military_time("0832"));
+    }
+
+    #[test]
+    fn validate_military_time_invalid_too_short() {
+        assert!(!validate_military_time("230"));
+    }
+
+    #[test]
+    fn validate_military_time_invalid_too_long() {
+        assert!(!validate_military_time("13452"));
+    }
+
+    #[test]
+    fn validate_military_time_invalid_hour_out_of_range() {
+        assert!(!validate_military_time("2500"));
+    }
+
+    #[test]
+    fn validate_military_time_invalid_minute_out_of_range() {
+        assert!(!validate_military_time("2370"));
+    }
+
+    #[test]
+    fn validate_military_time_invalid_non_numeric() {
+        assert!(!validate_military_time("abcd"));
+    }
+
+    #[test]
+    fn validate_currency_valid_no_cents() {
+        assert!(validate_currency("$1000"));
+    }
+
+    #[test]
+    fn validate_currency_valid_with_cents() {
+        assert!(validate_currency("$1234.56"));
+    }
+
+    #[test]
+    fn validate_currency_valid_with_commas() {
+        assert!(validate_currency("$1,234,567.89"));
+    }
+
+    #[test]
+    fn validate_currency_valid_one_cent() {
+        assert!(validate_currency("$0.01"));
+    }
+
+    #[test]
+    fn validate_currency_valid_no_decimal_cents() {
+        assert!(validate_currency("$1000.00"));
+    }
+
+    #[test]
+    fn validate_currency_invalid_missing_dollar_sign() {
+        assert!(!validate_currency("1234.56"));
+    }
+
+    #[test]
+    fn validate_currency_invalid_wrong_decimal_places() {
+        assert!(!validate_currency("$1234.567"));
+    }
+
+    #[test]
+    fn validate_currency_invalid_non_numeric() {
+        assert!(!validate_currency("$1,234.5a"));
+    }
+
+    #[test]
+    fn validate_currency_invalid_comma_position() {
+        assert!(!validate_currency("$12,34.56"));
+    }
+
+    #[test]
+    fn validate_currency_invalid_extra_dollar_sign() {
+        assert!(!validate_currency("$1$234.56"));
+    }
+
+    #[test]
+    fn validate_url_valid_http() {
+        assert!(validate_url("http://www.example.com"));
+    }
+
+    #[test]
+    fn validate_url_valid_https() {
+        assert!(validate_url("https://www.example.com"));
+    }
+
+    #[test]
+    fn validate_url_valid_no_protocol() {
+        assert!(validate_url("www.example.com"));
+    }
+
+    #[test]
+    fn validate_url_valid_subdomain() {
+        assert!(validate_url("https://subdomain.example.com"));
+    }
+
+    #[test]
+    fn validate_url_valid_path_and_query() {
+        assert!(validate_url("https://www.example.com/path?query=value"));
+    }
+
+    #[test]
+    fn validate_url_invalid_missing_tld() {
+        assert!(!validate_url("http://www.example"));
+    }
+
+    #[test]
+    fn validate_url_invalid_space_in_url() {
+        assert!(!validate_url("https://www.exa mple.com"));
+    }
+
+    #[test]
+    fn validate_url_invalid_back_slash() {
+        assert!(!validate_url("https://www.example.com\\path"));
+    }
+
+    #[test]
+    fn validate_url_invalid_extra_dot() {
+        assert!(!validate_url("https://www..example.com"));
+    }
+
+    #[test]
+    fn validate_url_invalid_wrong_protocol() {
+        assert!(!validate_url("ftp://www.example.com"));
+    }
+
+    #[test]
+    fn validate_password_valid_complex() {
+        assert!(validate_password("A1b@c$d2E#"));
+    }
+
+    #[test]
+    fn validate_password_valid_minimum_length() {
+        assert!(validate_password("A1b#c2D!c1"));
+    }
+
+    #[test]
+    fn validate_password_valid_no_consecutive_lowercase() {
+        assert!(validate_password("A1b#cD2e#F3"));
+    }
+
+    #[test]
+    fn validate_password_valid_all_requirements_met() {
+        assert!(validate_password("A1b@c#D2e!F3"));
+    }
+
+    #[test]
+    fn validate_password_valid_with_spaces() {
+        assert!(validate_password("A1b @c #D2"));
+    }
+
+    #[test]
+    fn validate_password_invalid_too_short() {
+        assert!(!validate_password("A1b#c2"));
+    }
+
+    #[test]
+    fn validate_password_invalid_missing_uppercase() {
+        assert!(!validate_password("a1b#c2d$3"));
+    }
+
+    #[test]
+    fn validate_password_invalid_missing_lowercase() {
+        assert!(!validate_password("A1B@C#D2E$"));
+    }
+
+    #[test]
+    fn validate_password_invalid_missing_digit() {
+        assert!(!validate_password("AaBbCcDdEe"));
+    }
+
+    #[test]
+    fn validate_password_invalid_consecutive_lowercase() {
+        assert!(!validate_password("A1#@bcdefE"));
+    }
+
+    #[test]
+    fn validate_odd_ion_words_valid_ablation() {
+        assert_eq!(validate_odd_ion_words("ablation"), vec!["ablation"]);
+    }
+
+    #[test]
+    fn validate_odd_ion_words_valid_ligation() {
+        assert_eq!(validate_odd_ion_words("ligation"), vec!["ligation"]);
+    }
+
+    #[test]
+    fn validate_odd_ion_words_valid_option() {
+        assert_eq!(validate_odd_ion_words("option"), vec!["option"]);
+    }
+
+    #[test]
+    fn validate_odd_ion_words_valid_fusion() {
+        assert_eq!(validate_odd_ion_words("fusion"), vec!["fusion"]);
+    }
+
+    #[test]
+    fn validate_odd_ion_words_valid_cation() {
+        assert_eq!(validate_odd_ion_words("cation"), vec!["cation"]);
+    }
+
+    #[test]
+    fn validate_odd_ion_words_invalid_even_chars() {
+        assert_eq!(validate_odd_ion_words("differentiation"), Vec::<String>::new());
+    }
+
+    #[test]
+    fn validate_odd_ion_words_invalid_not_ion() {
+        assert_eq!(validate_odd_ion_words("evolutione"), Vec::<String>::new());
+    }
+
+    #[test]
+    fn validate_odd_ion_words_invalid_single_char() {
+        assert_eq!(validate_odd_ion_words("i"), Vec::<String>::new());
+    }
+
+    #[test]
+    fn validate_odd_ion_words_invalid_no_chars() {
+        assert_eq!(validate_odd_ion_words(""), Vec::<String>::new());
+    }
+
+    #[test]
+    fn validate_odd_ion_words_invalid_empty_string() {
+        assert_eq!(validate_odd_ion_words(" "), Vec::<String>::new());
+    }
 }

@@ -63,6 +63,89 @@ fn main() {
     } else {
         println!("The date is invalid.");
     }
+
+    println!("Enter a house address (Street number, street name, and abbreviation):");
+    let mut address_input = String::new();
+    io::stdin().read_line(&mut address_input).expect("Failed to read input");
+
+    let address_input = address_input.trim();
+    if validate_address(address_input) {
+        println!("The house address is valid.");
+    } else {
+        println!("The house address is invalid.");
+    }
+
+    println!("Enter a city, state abbreviation, and zip code (e.g. Seattle, WA 98101):");
+    let mut city_state_zip_input = String::new();
+    io::stdin().read_line(&mut city_state_zip_input).expect("Failed to read input");
+
+    let city_state_zip_input = city_state_zip_input.trim();
+    if validate_city_state_zip(city_state_zip_input) {
+        println!("The city, state, and zip code are valid.");
+    } else {
+        println!("The city, state, and zip code are invalid.");
+    }
+
+    println!("Enter a military time without colons and with leading zeros for times under 10 (e.g. 0123):");
+    let mut military_time_input = String::new();
+    io::stdin().read_line(&mut military_time_input).expect("Failed to read input");
+
+    let military_time_input = military_time_input.trim();
+    if validate_military_time(military_time_input) {
+        println!("The military time is valid.");
+    } else {
+        println!("The military time is invalid.");
+    }
+
+    println!("Enter a US currency amount down to the penny (e.g. $123,456,789.23):");
+    let mut currency_input = String::new();
+    io::stdin().read_line(&mut currency_input).expect("Failed to read input");
+
+    let currency_input = currency_input.trim();
+    if validate_currency(currency_input) {
+        println!("The currency amount is valid.");
+    } else {
+        println!("The currency amount is invalid.");
+    }
+
+    println!("Enter a URL, optionally including http:// or https:// (e.g. https://www.example.com):");
+    let mut url_input = String::new();
+    io::stdin().read_line(&mut url_input).expect("Failed to read input");
+
+    let url_input = url_input.trim();
+    if validate_url(url_input) {
+        println!("The URL is valid.");
+    } else {
+        println!("The URL is invalid.");
+    }
+
+    println!("Enter a password with at least 10 characters, including at least one upper case \
+              character, one lower case character, one digit, one punctuation mark, and no more \
+              than 3 consecutive lower case characters:");
+    let mut password_input = String::new();
+    io::stdin().read_line(&mut password_input).expect("Failed to read input");
+
+    let password_input = password_input.trim();
+    if validate_password(password_input) {
+        println!("The password is valid.");
+    } else {
+        println!("The password is invalid.");
+    }
+
+    println!("Enter a text to find all words containing an odd number of alphabetic characters and ending in 'ion':");
+    let mut text_input = String::new();
+    io::stdin().read_line(&mut text_input).expect("Failed to read input");
+
+    let text_input = text_input.trim();
+    let odd_ion_words = validate_odd_ion_words(text_input);
+    if !odd_ion_words.is_empty() {
+        println!("Odd 'ion' words found:");
+        for word in odd_ion_words {
+            println!("{}", word);
+        }
+    } else {
+        println!("No odd 'ion' words found.");
+    }
 }
 
 lazy_static! {
@@ -71,6 +154,13 @@ lazy_static! {
     static ref EMAIL_REGEX: Regex = Regex::new(r"^(?i)[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$").unwrap();
     static ref NAME_ROSTER_REGEX: Regex = Regex::new(r"^(?P<last>[a-zA-Z]+),\s*(?P<first>[a-zA-Z]+)(,\s*(?P<middle>[a-zA-Z]))*$").unwrap();
     static ref DATE_REGEX: Regex = Regex::new(r"^(?P<month>0[1-9]|1[0-2])[-/](?P<day>0[1-9]|[12]\d|3[01])[-/](?P<year>\d{4})$").unwrap();
+    static ref ADDRESS_REGEX: Regex = Regex::new(r"^(?P<number>\d+)\s+(?P<street>[a-zA-Z\s]+)\s+(?P<type>(road|street|boulevard|avenue|r(?:d)?|st(?:r)?|blvd|ave))$").unwrap();
+    static ref CITY_STATE_ZIP_REGEX: Regex = Regex::new(r"^(?P<city>[a-zA-Z\s]+),\s+(?P<state>AL|AK|AZ|AR|CA|CO|CT|DE|FL|GA|HI|ID|IL|IN|IA|KS|KY|LA|ME|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY)\s+(?P<zip>\d{5}(-\d{4})?)$").unwrap();
+    static ref MILITARY_TIME_REGEX: Regex = Regex::new(r"^([01]\d|2[0-3])([0-5]\d)$").unwrap();
+    static ref CURRENCY_REGEX: Regex = Regex::new(r"^\$((\d{1,3}(,\d{3})*(\.\d{2})?)|(\d+(\.\d{2})?))$").unwrap();
+    static ref URL_REGEX: Regex = Regex::new(r"^(?i)((http|https):\/\/)?[\w\-]+(\.[\w\-]+)+\.?(:\d+)?(\/\S*)?$").unwrap();
+    static ref PASSWORD_REGEX: Regex = Regex::new(r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+,.?\:{}|<>])(?i)(?:(?:(?=.*[a-z]{1,3})[a-zA-Z\d!@#$%^&*()_+,.?\:{}|<>]){10,})$").unwrap();
+    static ref ODD_ION_WORDS_REGEX: Regex = Regex::new(r"\b(?:[a-zA-Z][a-zA-Z]*?){1}(?:[a-zA-Z][a-zA-Z]*?){1}ion\b").unwrap();
 }
 
 fn get_ssn() -> String {
@@ -150,8 +240,36 @@ fn is_leap_year(year: u16) -> bool {
     (year % 4 == 0) && (year % 100 != 0 || year % 400 == 0)
 }
 
+fn validate_address(address: &str) -> bool {
+    ADDRESS_REGEX.is_match(address)
+}
 
+fn validate_city_state_zip(input: &str) -> bool {
+    CITY_STATE_ZIP_REGEX.is_match(input)
+}
 
+fn validate_military_time(time: &str) -> bool {
+    MILITARY_TIME_REGEX.is_match(time)
+}
+
+fn validate_currency(amount: &str) -> bool {
+    CURRENCY_REGEX.is_match(amount)
+}
+
+fn validate_url(url: &str) -> bool {
+    URL_REGEX.is_match(url)
+}
+
+fn validate_password(password: &str) -> bool {
+    PASSWORD_REGEX.is_match(password)
+}
+
+fn validate_odd_ion_words(text: &str) -> Vec<String> {
+    ODD_ION_WORDS_REGEX
+        .find_iter(text)
+        .map(|mat| mat.as_str().to_string())
+        .collect()
+}
 
 
 // Unit tests

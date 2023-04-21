@@ -1,4 +1,4 @@
-[![Rust](https://github.com/Sinoffate/regex_assignment_483/actions/workflows/rust.yml/badge.svg?branch=main&event=status)](https://github.com/Sinoffate/regex_assignment_483/actions/workflows/rust.yml)
+[![Rust](https://github.com/Sinoffate/regex_assignment_483/actions/workflows/rust.yml/badge.svg)](https://github.com/Sinoffate/regex_assignment_483/actions/workflows/rust.yml)
 
 # Rust Validation Project
 

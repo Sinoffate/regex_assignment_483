@@ -8,7 +8,7 @@ To get started, you'll need to have the following software installed on your com
 
 - Rust: Follow the [official installation guide](https://www.rust-lang.org/tools/install) to install Rust and its package manager, Cargo.
 
-The installation process will install the Rust compiler, Cargo, and the Rust standard library. This will dependencies differ depending on your operating system.
+The installation process will install the Rust compiler, Cargo, and the Rust standard library. The dependencies will differ depending on your operating system.
 
 For Windows, you can use the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to run the project on a Linux environment (Which will be the easier option).
 

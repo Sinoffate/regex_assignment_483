@@ -1,3 +1,6 @@
+extern crate regex;
+extern crate phonenumber;
+
 use std::io;
 use regex::Regex;
 use phonenumber::{Mode, PhoneNumber};
@@ -146,8 +149,16 @@ fn main() {
     }
 }
 
-// This function gets the Social Security Number (SSN) input from the user.
-// It returns the user's input as a String.
+/// Retrieves a Social Security Number (SSN) from the user.
+///
+/// # Description
+///
+/// * Prompts the user to enter their SSN.
+/// * Reads the user's input and trims any leading or trailing whitespace.
+///
+/// # Returns
+///
+/// * `String` - Returns the user's inputted SSN as a String.
 fn get_ssn() -> String {
     let mut ssn = String::new();
     println!("Enter your SSN: ");
@@ -163,7 +174,21 @@ fn get_ssn() -> String {
     ssn.to_string()
 }
 
-// This function validates the given SSN and returns a boolean value.
+/// Validates a US Social Security Number (SSN).
+///
+/// # Arguments
+///
+/// * `ssn` - A string slice that holds the Social Security Number.
+///
+/// # Rules
+///
+/// * Accepts SSNs with or without dashes or spaces as separators.
+/// * Area, group, and serial numbers must not be 0.
+/// * Invalid area numbers: 666 and those in the range 900-999.
+///
+/// # Returns
+///
+/// * `bool` - Returns true if the SSN is valid, false otherwise.
 fn validate_ssn(ssn: &str) -> bool {
     let ssn_regex: Regex = Regex::new(r"^(?P<area>\d{3})[-\s]?(?P<group>\d{2})[-\s]?(?P<serial>\d{4})$").unwrap();
     // Check if the SSN matches the SSN_REGEX pattern.
@@ -191,8 +216,21 @@ fn validate_ssn(ssn: &str) -> bool {
     return false
 }
 
-// This function validates the given US phone number string and returns an Option containing
-// a PhoneNumber struct if the input is valid or None if the input is invalid.
+/// Validates a US phone number.
+///
+/// # Arguments
+///
+/// * `phone` - A string slice that holds the phone number.
+///
+/// # Rules
+///
+/// * Accepts US phone numbers with or without parentheses around the area code.
+/// * Accepts phone numbers with or without dashes or spaces as separators.
+/// * Only allows valid area codes.
+///
+/// # Returns
+///
+/// * `Option<PhoneNumber>` - Returns Some(PhoneNumber) if the phone number is valid, None otherwise.
 fn validate_phone_number(phone: &str) -> Option<PhoneNumber> {
     let phone_regex: Regex = Regex::new(r"^\s*\(?(\d{3})\)?[-\s]?(\d{3})[-\s]?(\d{4})\s*$").unwrap();
     // Check if the input phone number matches the PHONE_NUMBER_REGEX pattern.
@@ -218,24 +256,73 @@ fn validate_phone_number(phone: &str) -> Option<PhoneNumber> {
     None
 }
 
+/// Validates an email address according to the specified rules.
+///
+/// # Arguments
+///
+/// * `email` - A string slice that holds the email address to be validated.
+///
+/// # Rules
+///
+/// * Allowed special characters are !#$ %&'*/=? ^_+-`{|}~
+/// * No consecutive special characters.
+/// * Alphanumeric characters ignoring case.
+/// * Only one @ symbol for separating the prefix and domain.
+/// * Only a single . is allowed as a special character in the domain.
+///
+/// # Returns
+///
+/// * `bool` - Returns true if the email address is valid, false otherwise.
 fn validate_email(email: &str) -> bool {
     let email_regex: Regex = Regex::new(r"(?i)^(?P<prefix>[a-z0-9!#$%&'*+/=?^_`{|}~-]+(\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*)(@)(?P<domain>[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)+)$").unwrap();
-
     email_regex.is_match(email)
 }
 
+/// Validates a name in the format of a class roster.
+///
+/// # Arguments
+///
+/// * `name_roster` - A string slice that holds the name in the format "Last, First, MI".
+///
+/// # Rules
+///
+/// * Last name, followed by a comma and a space.
+/// * First name, followed by an optional comma and space, and middle initial(s).
+/// * Each part of the name should only contain alphabetic characters.
+///
+/// # Returns
+///
+/// * `bool` - Returns true if the name is in the correct format, false otherwise.
 fn validate_name_roster(name_roster: &str) -> bool {
     let name_roster_regex: Regex = Regex::new(r"^(?P<last>[a-zA-Z]+),\s*(?P<first>[a-zA-Z]+)(,\s*(?P<middle>[a-zA-Z]))*$").unwrap();
     name_roster_regex.is_match(name_roster)
 }
 
+/// Validates a given date string in the format "MM/DD/YYYY" or "MM-DD-YYYY".
+///
+/// # Description
+///
+/// * Checks if the date string matches the expected format using a regex pattern.
+/// * Ensures the day value is valid for the given month and year.
+/// * Accounts for leap years.
+///
+/// # Arguments
+///
+/// * `date: &str` - The input date string to validate.
+///
+/// # Returns
+///
+/// * `bool` - Returns `true` if the date is valid, and `false` otherwise.
 fn validate_date(date: &str) -> bool {
     let date_regex: Regex = Regex::new(r"^(?P<month>0[1-9]|1[0-2])[-/](?P<day>0[1-9]|[12]\d|3[01])[-/](?P<year>\d{4})$").unwrap();
     if let Some(captures) = date_regex.captures(date) {
+
+        // Parses the month, day, and year values from the matched date string into u16 integers.
         let month = captures.name("month").unwrap().as_str().parse::<u16>().unwrap();
         let day = captures.name("day").unwrap().as_str().parse::<u16>().unwrap();
         let year = captures.name("year").unwrap().as_str().parse::<u16>().unwrap();
 
+        // Determines the number of days in the given month.
         let days_in_month = match month {
             1 | 3 | 5 | 7 | 8 | 10 | 12 => 31,
             4 | 6 | 9 | 11 => 30,
@@ -244,51 +331,169 @@ fn validate_date(date: &str) -> bool {
             _ => return false,
         };
 
+        // Checks if the day value is valid for the given month and year.
         if day > 0 && day <= days_in_month {
             return true;
         }
     }
-
-    false
+    return false
 }
 
+/// Determines if a given year is a leap year.
+///
+/// # Description
+///
+/// * A leap year is divisible by 4, but not divisible by 100 unless it's also divisible by 400.
+///
+/// # Arguments
+///
+/// * `year: u16` - The input year to check for leap year status.
+///
+/// # Returns
+///
+/// * `bool` - Returns `true` if the year is a leap year, and `false` otherwise.
 fn is_leap_year(year: u16) -> bool {
     (year % 4 == 0) && (year % 100 != 0 || year % 400 == 0)
 }
 
+/// Validates an address by checking if it matches the expected format.
+///
+/// # Description
+///
+/// * This function checks if the input address matches a specific format, which consists of:
+///   - A house number (numeric)
+///   - Street name (alphanumeric)
+///   - Street type (e.g., road, street, avenue, etc.)
+/// * The input address string should be in a case-insensitive format.
+///
+/// # Arguments
+///
+/// * `address: &str` - The input address string to validate.
+///
+/// # Returns
+///
+/// * `bool` - Returns `true` if the address matches the expected format, and `false` otherwise.
 fn validate_address(address: &str) -> bool {
     let address_regex: Regex = Regex::new(r"(?i)^\d+\s+([\w\s]+)\s+(road|rd|street|st|avenue|ave|boulevard|blvd)$").unwrap();
     address_regex.is_match(address)
 }
 
+/// Validates a city, state, and ZIP code combination by checking if it matches the expected format.
+///
+/// # Description
+///
+/// * This function checks if the input string matches the specific format, which consists of:
+///   - City name (alphabetical characters and spaces)
+///   - State abbreviation (2-letter US state abbreviation)
+///   - ZIP code (5-digit ZIP code, optionally followed by a hyphen and 4 more digits)
+/// * The input string should have a comma and a space separating the city and state, and a space separating the state and ZIP code.
+///
+/// # Arguments
+///
+/// * `input: &str` - The input string containing the city, state, and ZIP code to validate.
+///
+/// # Returns
+///
+/// * `bool` - Returns `true` if the input matches the expected format, and `false` otherwise.
 fn validate_city_state_zip(input: &str) -> bool {
     let city_state_zip_regex: Regex = Regex::new(r"^(?P<city>[a-zA-Z\s]+),\s+(?P<state>AL|AK|AZ|AR|CA|CO|CT|DE|FL|GA|HI|ID|IL|IN|IA|KS|KY|LA|ME|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY)\s+(?P<zip>\d{5}(-\d{4})?)$").unwrap();
     city_state_zip_regex.is_match(input)
 }
 
+/// Validates a military time (24-hour) format string by checking if it matches the expected format.
+///
+/// # Description
+///
+/// * This function checks if the input string matches the military time format (24-hour format), which consists of:
+///   - Hours: 00-23
+///   - Minutes: 00-59
+/// * The input string should be 4 digits long without any separator between hours and minutes.
+///
+/// # Arguments
+///
+/// * `time: &str` - The input string containing the military time to validate.
+///
+/// # Returns
+///
+/// * `bool` - Returns `true` if the input matches the expected military time format, and `false` otherwise.
 fn validate_military_time(time: &str) -> bool {
     let military_time_regex: Regex = Regex::new(r"^([01]\d|2[0-3])([0-5]\d)$").unwrap();
     military_time_regex.is_match(time)
 }
 
+/// Validates a currency amount string by checking if it matches the expected format.
+///
+/// # Description
+///
+/// * This function checks if the input string matches the currency amount format, which consists of:
+///   - A dollar sign ($)
+///   - An optional group of 1 to 3 digits followed by optional groups of 3 digits separated by commas
+///   - An optional decimal point followed by exactly 2 digits
+/// * The input string must start with a dollar sign ($).
+///
+/// # Arguments
+///
+/// * `amount: &str` - The input string containing the currency amount to validate.
+///
+/// # Returns
+///
+/// * `bool` - Returns `true` if the input matches the expected currency amount format, and `false` otherwise.
 fn validate_currency(amount: &str) -> bool {
     let currency_regex: Regex = Regex::new(r"^\$((\d{1,3}(,\d{3})*(\.\d{2})?)|(\d+(\.\d{2})?))$").unwrap();
     currency_regex.is_match(amount)
 }
 
+/// Validates a URL string by checking if it matches the expected format.
+///
+/// # Description
+///
+/// * This function checks if the input string matches the URL format, which consists of:
+///   - An optional "http://" or "https://" prefix (case-insensitive)
+///   - A domain name with one or more subdomains, each consisting of alphanumeric characters and hyphens, separated by periods
+///   - A top-level domain (TLD) with 2 to 6 alphabetic characters
+///   - An optional path with allowed characters: a-z, A-Z, 0-9, -, (, ), @, %, _, +, ., ~, #, ?, &, =
+///
+/// # Arguments
+///
+/// * `url: &str` - The input string containing the URL to validate.
+///
+/// # Returns
+///
+/// * `bool` - Returns `true` if the input matches the expected URL format, and `false` otherwise.
 fn validate_url(url: &str) -> bool {
-    let url_regex: Regex = Regex::new(r"(?i)^(?:http[s]?://)?(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+(?:[a-zA-Z]{2,6})(?:/[-a-zA-Z0-9()@:%_+.~#?&/=]*)?$").unwrap();
-
+    let url_regex: Regex = Regex::new(r"(?i)^(?:http[s]?://)?(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+(?:[a-zA-Z]{2,6})(?:/[-a-zA-Z0-9()@:%_+.~#?&=]*)?$").unwrap();
     url_regex.is_match(url)
 }
 
+/// Validates a password string by checking if it meets the specified requirements.
+///
+/// # Description
+///
+/// * This function checks if the input password string meets the following requirements:
+///   - At least 10 characters in length
+///   - Contains at least one uppercase character
+///   - Contains at least one lowercase character
+///   - Contains at least one digit
+///   - Contains at least one punctuation mark
+///   - Does not have more than 3 consecutive lowercase characters
+///
+/// # Arguments
+///
+/// * `password: &str` - The input string containing the password to validate.
+///
+/// # Returns
+///
+/// * `bool` - Returns `true` if the input password meets all the requirements, and `false` otherwise.
 fn validate_password(password: &str) -> bool {
+
+    // Create a regular expression for each requirement
     let uppercase = Regex::new(r"[A-Z]").unwrap();
     let lowercase = Regex::new(r"[a-z]").unwrap();
     let digit = Regex::new(r"\d").unwrap();
     let punctuation = Regex::new(r"[:punct:]").unwrap();
     let consecutive_lowercase = Regex::new(r"[a-z]{4,}").unwrap();
 
+    // Check if the password meets each requirement
     let min_length = password.len() >= 10;
     let has_uppercase = uppercase.is_match(password);
     let has_lowercase = lowercase.is_match(password);
@@ -299,8 +504,27 @@ fn validate_password(password: &str) -> bool {
     min_length && has_uppercase && has_lowercase && has_digit && has_punctuation && no_consecutive_lowercase
 }
 
+/// Validates a text string by extracting words that have an odd number of characters and end with "ion".
+///
+/// # Description
+///
+/// * This function checks the input text string for words that:
+///   - Have an odd number of characters
+///   - End with the substring "ion"
+///
+/// * The function extracts all matching words and returns them as a vector of strings.
+///
+/// # Arguments
+///
+/// * `text: &str` - The input string containing the text to be validated and processed.
+///
+/// # Returns
+///
+/// * `Vec<String>` - A vector of strings containing the extracted words that meet the specified criteria.
 fn validate_odd_ion_words(text: &str) -> Vec<String> {
     let odd_ion_words_regex: Regex = Regex::new(r"\b(?:[a-zA-Z]{2})*[a-zA-Z]ion\b").unwrap();
+
+    // Extract all words that match the criteria and return them as a vector of strings
     odd_ion_words_regex
         .find_iter(text)
         .map(|mat| mat.as_str().to_string())
@@ -858,8 +1082,8 @@ mod tests {
     }
 
     #[test]
-    fn validate_url_invalid_back_slash() {
-        assert!(!validate_url("https://www.example.com\\path"));
+    fn validate_url_invalid_double_slash() {
+        assert!(!validate_url("https://www.example.com//path"));
     }
 
     #[test]

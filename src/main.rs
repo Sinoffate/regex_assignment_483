@@ -1,6 +1,3 @@
-extern crate regex;
-extern crate phonenumber;
-
 use std::io;
 use regex::Regex;
 use phonenumber::{Mode, PhoneNumber};

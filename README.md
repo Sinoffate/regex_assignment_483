@@ -1,3 +1,5 @@
+[![Rust](https://github.com/Sinoffate/regex_assignment_483/actions/workflows/rust.yml/badge.svg?branch=main&event=status)](https://github.com/Sinoffate/regex_assignment_483/actions/workflows/rust.yml)
+
 # Rust Validation Project
 
 This project demonstrates the usage of user input and regular expressions in Rust. It includes various functions for validating and parsing different types of inputs such as Social Security Numbers, US phone numbers, email addresses, and more.

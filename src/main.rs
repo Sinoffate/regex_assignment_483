@@ -142,7 +142,7 @@ fn main() {
     if !odd_ion_words.is_empty() {
         println!("Odd 'ion' words found:");
         for word in odd_ion_words {
-            println!("{}", word);
+            println!("{ }", word);
         }
     } else {
         println!("No odd 'ion' words found.");
@@ -511,6 +511,7 @@ fn validate_password(password: &str) -> bool {
 /// * This function checks the input text string for words that:
 ///   - Have an odd number of characters
 ///   - End with the substring "ion"
+///   - The words can be delimited by spaces, newlines, tabs, or dashes.
 ///
 /// * The function extracts all matching words and returns them as a vector of strings.
 ///
@@ -522,7 +523,7 @@ fn validate_password(password: &str) -> bool {
 ///
 /// * `Vec<String>` - A vector of strings containing the extracted words that meet the specified criteria.
 fn validate_odd_ion_words(text: &str) -> Vec<String> {
-    let odd_ion_words_regex: Regex = Regex::new(r"\b(?:[a-zA-Z]{2})*[a-zA-Z]ion\b").unwrap();
+    let odd_ion_words_regex: Regex = Regex::new(r"\b(?:[a-zA-Z]{2})*[a-zA-Z]ion(?:\b(?:\s|-|\n|\t)*|$)").unwrap();
 
     // Extract all words that match the criteria and return them as a vector of strings
     odd_ion_words_regex

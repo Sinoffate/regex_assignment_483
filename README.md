@@ -12,7 +12,7 @@ To get started, you'll need to have the following software installed on your com
 
 The installation process will install the Rust compiler, Cargo, and the Rust standard library. The dependencies will differ depending on your operating system.
 
-For Windows, you can use the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to run the project on a Linux environment (Which will be the easier option).
+For Windows, you can use the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to run the project on a Linux environment (Which will be the easier option than running natively).
 
 ## Getting Started
 These instructions will help you set up the environment and run the project on your local machine.

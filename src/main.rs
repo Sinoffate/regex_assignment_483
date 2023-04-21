@@ -795,402 +795,402 @@ mod tests {
     }
 
     #[test]
-    fn validate_date_valid_with_dash_separator() {
+    fn test_validate_date_valid_with_dash_separator() {
         assert!(validate_date("12-31-2021"));
     }
 
     #[test]
-    fn validate_date_valid_with_slash_separator() {
+    fn test_validate_date_valid_with_slash_separator() {
         assert!(validate_date("01/01/2022"));
     }
 
     #[test]
-    fn validate_date_valid_leap_year() {
+    fn test_validate_date_valid_leap_year() {
         assert!(validate_date("02-29-2020"));
     }
 
     #[test]
-    fn validate_date_valid_month_boundary() {
+    fn test_validate_date_valid_month_boundary() {
         assert!(validate_date("03/31/2021"));
     }
 
     #[test]
-    fn validate_date_valid_end_of_year() {
+    fn test_validate_date_valid_end_of_year() {
         assert!(validate_date("12-31-2023"));
     }
 
     #[test]
-    fn validate_date_invalid_missing_separator() {
+    fn test_validate_date_invalid_missing_separator() {
         assert!(!validate_date("03252021"));
     }
 
     #[test]
-    fn validate_date_invalid_wrong_separator() {
+    fn test_validate_date_invalid_wrong_separator() {
         assert!(!validate_date("04.26.2021"));
     }
 
     #[test]
-    fn validate_date_invalid_day_out_of_range() {
+    fn test_validate_date_invalid_day_out_of_range() {
         assert!(!validate_date("02-30-2021"));
     }
 
     #[test]
-    fn validate_date_invalid_month_out_of_range() {
+    fn test_validate_date_invalid_month_out_of_range() {
         assert!(!validate_date("13/01/2021"));
     }
 
     #[test]
-    fn validate_date_invalid_non_leap_year() {
+    fn test_validate_date_invalid_non_leap_year() {
         assert!(!validate_date("02-29-2021"));
     }
 
     #[test]
-    fn validate_address_valid_full_road_name() {
+    fn test_validate_address_valid_full_road_name() {
         assert!(validate_address("1234 Elmwood Road"));
     }
 
     #[test]
-    fn validate_address_valid_abbreviated_street_name() {
+    fn test_validate_address_valid_abbreviated_street_name() {
         assert!(validate_address("5678 Oak St"));
     }
 
     #[test]
-    fn validate_address_valid_abbreviated_avenue_name() {
+    fn test_validate_address_valid_abbreviated_avenue_name() {
         assert!(validate_address("9012 Maple Ave"));
     }
 
     #[test]
-    fn validate_address_valid_full_boulevard_name() {
+    fn test_validate_address_valid_full_boulevard_name() {
         assert!(validate_address("3456 Cherry Boulevard"));
     }
 
     #[test]
-    fn validate_address_valid_abbreviated_boulevard_name() {
+    fn test_validate_address_valid_abbreviated_boulevard_name() {
         assert!(validate_address("7890 Pine Blvd"));
     }
 
     #[test]
-    fn validate_address_invalid_no_street_number() {
+    fn test_validate_address_invalid_no_street_number() {
         assert!(!validate_address("Cedar Road"));
     }
 
     #[test]
-    fn validate_address_invalid_no_road_type() {
+    fn test_validate_address_invalid_no_road_type() {
         assert!(!validate_address("1234 Walnut"));
     }
 
     #[test]
-    fn validate_address_invalid_incorrect_road_abbreviation() {
+    fn test_validate_address_invalid_incorrect_road_abbreviation() {
         assert!(!validate_address("5678 Elm R"));
     }
 
     #[test]
-    fn validate_address_invalid_missing_space() {
+    fn test_validate_address_invalid_missing_space() {
         assert!(!validate_address("9012Birch Street"));
     }
 
     #[test]
-    fn validate_address_invalid_street_name_missing_space() {
+    fn test_validate_address_invalid_street_name_missing_space() {
         assert!(!validate_address("3456 PeachAve"));
     }
 
     #[test]
-    fn validate_city_state_zip_valid_city_name() {
+    fn test_validate_city_state_zip_valid_city_name() {
         assert!(validate_city_state_zip("Seattle, WA 98101"));
     }
 
     #[test]
-    fn validate_city_state_zip_valid_state_abbreviation() {
+    fn test_validate_city_state_zip_valid_state_abbreviation() {
         assert!(validate_city_state_zip("Austin, TX 78701"));
     }
 
     #[test]
-    fn validate_city_state_zip_valid_zip_code() {
+    fn test_validate_city_state_zip_valid_zip_code() {
         assert!(validate_city_state_zip("New York, NY 10001"));
     }
 
     #[test]
-    fn validate_city_state_zip_valid_with_spaces() {
+    fn test_validate_city_state_zip_valid_with_spaces() {
         assert!(validate_city_state_zip("Los Angeles,   CA    90001"));
     }
 
     #[test]
-    fn validate_city_state_zip_valid_multiline() {
+    fn test_validate_city_state_zip_valid_multiline() {
         assert!(validate_city_state_zip("Portland,\nOR 97201"));
     }
 
     #[test]
-    fn validate_city_state_zip_invalid_no_comma() {
+    fn test_validate_city_state_zip_invalid_no_comma() {
         assert!(!validate_city_state_zip("Boston MA 02101"));
     }
 
     #[test]
-    fn validate_city_state_zip_invalid_no_space_after_comma() {
+    fn test_validate_city_state_zip_invalid_no_space_after_comma() {
         assert!(!validate_city_state_zip("Chicago,IL 60601"));
     }
 
     #[test]
-    fn validate_city_state_zip_invalid_wrong_state_abbreviation() {
+    fn test_validate_city_state_zip_invalid_wrong_state_abbreviation() {
         assert!(!validate_city_state_zip("Miami, FLA 33101"));
     }
 
     #[test]
-    fn validate_city_state_zip_invalid_non_alphabetic_city_name() {
+    fn test_validate_city_state_zip_invalid_non_alphabetic_city_name() {
         assert!(!validate_city_state_zip("123City, CA 90001"));
     }
 
     #[test]
-    fn validate_city_state_zip_invalid_zip_code_length() {
+    fn test_validate_city_state_zip_invalid_zip_code_length() {
         assert!(!validate_city_state_zip("Denver, CO 8020"));
     }
 
     #[test]
-    fn validate_military_time_valid_midnight() {
+    fn test_validate_military_time_valid_midnight() {
         assert!(validate_military_time("0000"));
     }
 
     #[test]
-    fn validate_military_time_valid_noon() {
+    fn test_validate_military_time_valid_noon() {
         assert!(validate_military_time("1200"));
     }
 
     #[test]
-    fn validate_military_time_valid_one_minute_before_midnight() {
+    fn test_validate_military_time_valid_one_minute_before_midnight() {
         assert!(validate_military_time("2359"));
     }
 
     #[test]
-    fn validate_military_time_valid_random_hour_and_minute() {
+    fn test_validate_military_time_valid_random_hour_and_minute() {
         assert!(validate_military_time("1543"));
     }
 
     #[test]
-    fn validate_military_time_valid_leading_zero() {
+    fn test_validate_military_time_valid_leading_zero() {
         assert!(validate_military_time("0832"));
     }
 
     #[test]
-    fn validate_military_time_invalid_too_short() {
+    fn test_validate_military_time_invalid_too_short() {
         assert!(!validate_military_time("230"));
     }
 
     #[test]
-    fn validate_military_time_invalid_too_long() {
+    fn test_validate_military_time_invalid_too_long() {
         assert!(!validate_military_time("13452"));
     }
 
     #[test]
-    fn validate_military_time_invalid_hour_out_of_range() {
+    fn test_validate_military_time_invalid_hour_out_of_range() {
         assert!(!validate_military_time("2500"));
     }
 
     #[test]
-    fn validate_military_time_invalid_minute_out_of_range() {
+    fn test_validate_military_time_invalid_minute_out_of_range() {
         assert!(!validate_military_time("2370"));
     }
 
     #[test]
-    fn validate_military_time_invalid_non_numeric() {
+    fn test_validate_military_time_invalid_non_numeric() {
         assert!(!validate_military_time("abcd"));
     }
 
     #[test]
-    fn validate_currency_valid_no_cents() {
+    fn test_validate_currency_valid_no_cents() {
         assert!(validate_currency("$1000"));
     }
 
     #[test]
-    fn validate_currency_valid_with_cents() {
+    fn test_validate_currency_valid_with_cents() {
         assert!(validate_currency("$1234.56"));
     }
 
     #[test]
-    fn validate_currency_valid_with_commas() {
+    fn test_validate_currency_valid_with_commas() {
         assert!(validate_currency("$1,234,567.89"));
     }
 
     #[test]
-    fn validate_currency_valid_one_cent() {
+    fn test_validate_currency_valid_one_cent() {
         assert!(validate_currency("$0.01"));
     }
 
     #[test]
-    fn validate_currency_valid_no_decimal_cents() {
+    fn test_validate_currency_valid_no_decimal_cents() {
         assert!(validate_currency("$1000.00"));
     }
 
     #[test]
-    fn validate_currency_invalid_missing_dollar_sign() {
+    fn test_validate_currency_invalid_missing_dollar_sign() {
         assert!(!validate_currency("1234.56"));
     }
 
     #[test]
-    fn validate_currency_invalid_wrong_decimal_places() {
+    fn test_validate_currency_invalid_wrong_decimal_places() {
         assert!(!validate_currency("$1234.567"));
     }
 
     #[test]
-    fn validate_currency_invalid_non_numeric() {
+    fn test_validate_currency_invalid_non_numeric() {
         assert!(!validate_currency("$1,234.5a"));
     }
 
     #[test]
-    fn validate_currency_invalid_comma_position() {
+    fn test_validate_currency_invalid_comma_position() {
         assert!(!validate_currency("$12,34.56"));
     }
 
     #[test]
-    fn validate_currency_invalid_extra_dollar_sign() {
+    fn test_validate_currency_invalid_extra_dollar_sign() {
         assert!(!validate_currency("$1$234.56"));
     }
 
     #[test]
-    fn validate_url_valid_http() {
+    fn test_validate_url_valid_http() {
         assert!(validate_url("http://www.example.com"));
     }
 
     #[test]
-    fn validate_url_valid_https() {
+    fn test_validate_url_valid_https() {
         assert!(validate_url("https://www.example.com"));
     }
 
     #[test]
-    fn validate_url_valid_no_protocol() {
+    fn test_validate_url_valid_no_protocol() {
         assert!(validate_url("www.example.com"));
     }
 
     #[test]
-    fn validate_url_valid_subdomain() {
+    fn test_validate_url_valid_subdomain() {
         assert!(validate_url("https://subdomain.example.com"));
     }
 
     #[test]
-    fn validate_url_valid_path_and_query() {
+    fn test_validate_url_valid_path_and_query() {
         assert!(validate_url("https://www.example.com/path?query=value"));
     }
 
     #[test]
-    fn validate_url_invalid_missing_tld() {
+    fn test_validate_url_invalid_missing_tld() {
         assert!(!validate_url("http://www.example"));
     }
 
     #[test]
-    fn validate_url_invalid_space_in_url() {
+    fn test_validate_url_invalid_space_in_url() {
         assert!(!validate_url("https://www.exa mple.com"));
     }
 
     #[test]
-    fn validate_url_invalid_double_slash() {
+    fn test_validate_url_invalid_double_slash() {
         assert!(!validate_url("https://www.example.com//path"));
     }
 
     #[test]
-    fn validate_url_invalid_extra_dot() {
+    fn test_validate_url_invalid_extra_dot() {
         assert!(!validate_url("https://www..example.com"));
     }
 
     #[test]
-    fn validate_url_invalid_wrong_protocol() {
+    fn test_validate_url_invalid_wrong_protocol() {
         assert!(!validate_url("ftp://www.example.com"));
     }
 
     #[test]
-    fn validate_password_valid_complex() {
+    fn test_validate_password_valid_complex() {
         assert!(validate_password("A1b@c$d2E#"));
     }
 
     #[test]
-    fn validate_password_valid_minimum_length() {
+    fn test_validate_password_valid_minimum_length() {
         assert!(validate_password("A1b#c2D!c1"));
     }
 
     #[test]
-    fn validate_password_valid_no_consecutive_lowercase() {
+    fn test_validate_password_valid_no_consecutive_lowercase() {
         assert!(validate_password("A1b#cD2e#F3"));
     }
 
     #[test]
-    fn validate_password_valid_all_requirements_met() {
+    fn test_validate_password_valid_all_requirements_met() {
         assert!(validate_password("A1b@c#D2e!F3"));
     }
 
     #[test]
-    fn validate_password_valid_with_spaces() {
+    fn test_validate_password_valid_with_spaces() {
         assert!(validate_password("A1b @c #D2"));
     }
 
     #[test]
-    fn validate_password_invalid_too_short() {
+    fn test_validate_password_invalid_too_short() {
         assert!(!validate_password("A1b#c2"));
     }
 
     #[test]
-    fn validate_password_invalid_missing_uppercase() {
+    fn test_validate_password_invalid_missing_uppercase() {
         assert!(!validate_password("a1b#c2d$3"));
     }
 
     #[test]
-    fn validate_password_invalid_missing_lowercase() {
+    fn test_validate_password_invalid_missing_lowercase() {
         assert!(!validate_password("A1B@C#D2E$"));
     }
 
     #[test]
-    fn validate_password_invalid_missing_digit() {
+    fn test_validate_password_invalid_missing_digit() {
         assert!(!validate_password("AaBbCcDdEe"));
     }
 
     #[test]
-    fn validate_password_invalid_consecutive_lowercase() {
+    fn test_validate_password_invalid_consecutive_lowercase() {
         assert!(!validate_password("A1#@bcdefE"));
     }
 
     #[test]
-    fn validate_odd_ion_words_valid_ablation() {
+    fn test_validate_odd_ion_words_valid_ablation() {
         assert_eq!(validate_odd_ion_words("ablation"), vec!["ablation"]);
     }
 
     #[test]
-    fn validate_odd_ion_words_valid_ligation() {
+    fn test_validate_odd_ion_words_valid_ligation() {
         assert_eq!(validate_odd_ion_words("ligation"), vec!["ligation"]);
     }
 
     #[test]
-    fn validate_odd_ion_words_valid_option() {
+    fn test_validate_odd_ion_words_valid_option() {
         assert_eq!(validate_odd_ion_words("option"), vec!["option"]);
     }
 
     #[test]
-    fn validate_odd_ion_words_valid_fusion() {
+    fn test_validate_odd_ion_words_valid_fusion() {
         assert_eq!(validate_odd_ion_words("fusion"), vec!["fusion"]);
     }
 
     #[test]
-    fn validate_odd_ion_words_valid_cation() {
+    fn test_validate_odd_ion_words_valid_cation() {
         assert_eq!(validate_odd_ion_words("cation"), vec!["cation"]);
     }
 
     #[test]
-    fn validate_odd_ion_words_invalid_even_chars() {
+    fn test_validate_odd_ion_words_invalid_even_chars() {
         assert_eq!(validate_odd_ion_words("differentiation"), Vec::<String>::new());
     }
 
     #[test]
-    fn validate_odd_ion_words_invalid_not_ion() {
+    fn test_validate_odd_ion_words_invalid_not_ion() {
         assert_eq!(validate_odd_ion_words("evolutione"), Vec::<String>::new());
     }
 
     #[test]
-    fn validate_odd_ion_words_invalid_single_char() {
+    fn test_validate_odd_ion_words_invalid_single_char() {
         assert_eq!(validate_odd_ion_words("i"), Vec::<String>::new());
     }
 
     #[test]
-    fn validate_odd_ion_words_invalid_no_chars() {
+    fn test_validate_odd_ion_words_invalid_no_chars() {
         assert_eq!(validate_odd_ion_words(""), Vec::<String>::new());
     }
 
     #[test]
-    fn validate_odd_ion_words_invalid_empty_string() {
+    fn test_validate_odd_ion_words_invalid_empty_string() {
         assert_eq!(validate_odd_ion_words(" "), Vec::<String>::new());
     }
 }

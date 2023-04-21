@@ -13,6 +13,13 @@ To get started, you'll need to have the following software installed on your com
 The installation process will install the Rust compiler, Cargo, and the Rust standard library. The dependencies will differ depending on your operating system.
 
 For Windows, you can use the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to run the project on a Linux environment (Which will be the easier option than running natively).
+```bash
+# Install pre-reqs
+sudo apt install build-essential 
+
+# Install Rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
 
 ## Getting Started
 These instructions will help you set up the environment and run the project on your local machine.
@@ -37,7 +44,7 @@ These instructions will help you set up the environment and run the project on y
 This project includes the following functions for validation and parsing:
 
 - validate_ssn: Validates US Social Security Numbers.
-- validate_phone_number: Validates US phone numbers and formats them in E.164 format.
+- validate_phone_number: Validates US phone numbers and will reformat them to ensure readability.
 - validate_email: Validates email addresses.
 - validate_name: Validates names on a class roster.
 - validate_date: Validates dates in MM-DD-YYYY format.
